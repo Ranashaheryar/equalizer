@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:equalizer/equalizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_xlider/flutter_xlider.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool enableCustomEQ = false;
+  bool? enableCustomEQ = false;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
               color: Colors.grey.withOpacity(0.1),
               child: SwitchListTile(
                 title: Text('Custom Equalizer'),
-                value: enableCustomEQ,
+                value: enableCustomEQ!,
                 onChanged: (value) {
                   Equalizer.setEnabled(value);
                   setState(() {
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
               future: Equalizer.getBandLevelRange(),
               builder: (context, snapshot) {
                 return snapshot.connectionState == ConnectionState.done
-                    ? CustomEQ(enableCustomEQ, snapshot.data)
+                    ? CustomEQ(enableCustomEQ!, snapshot.data!)
                     : CircularProgressIndicator();
               },
             ),
@@ -100,9 +100,9 @@ class CustomEQ extends StatefulWidget {
 }
 
 class _CustomEQState extends State<CustomEQ> {
-  double min, max;
-  String _selectedValue;
-  Future<List<String>> fetchPresets;
+  double? min, max;
+  String? _selectedValue;
+  Future<List<String>>? fetchPresets;
 
   @override
   void initState() {
@@ -124,7 +124,7 @@ class _CustomEQState extends State<CustomEQ> {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: snapshot.data
+                    children: snapshot.data!
                         .map((freq) => _buildSliderBand(freq, bandId++))
                         .toList(),
                   ),
@@ -148,17 +148,18 @@ class _CustomEQState extends State<CustomEQ> {
           child: FutureBuilder<int>(
             future: Equalizer.getBandLevel(bandId),
             builder: (context, snapshot) {
-              return FlutterSlider(
-                disabled: !widget.enabled,
-                axis: Axis.vertical,
-                rtl: true,
-                min: min,
-                max: max,
-                values: [snapshot.hasData ? snapshot.data.toDouble() : 0],
-                onDragCompleted: (handlerIndex, lowerValue, upperValue) {
-                  Equalizer.setBandLevel(bandId, lowerValue.toInt());
-                },
-              );
+              return Container();
+              //  FlutterSlider(
+              //   disabled: !widget.enabled,
+              //   axis: Axis.vertical,
+              //   rtl: true,
+              //   min: min,
+              //   max: max,
+              //   values: [snapshot.hasData ? snapshot.data.toDouble() : 0],
+              //   onDragCompleted: (handlerIndex, lowerValue, upperValue) {
+              //     Equalizer.setBandLevel(bandId, lowerValue.toInt());
+              //   },
+              // );
             },
           ),
         ),
@@ -173,7 +174,7 @@ class _CustomEQState extends State<CustomEQ> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final presets = snapshot.data;
-          if (presets.isEmpty) return Text('No presets available!');
+          if (presets!.isEmpty) return Text('No presets available!');
           return DropdownButtonFormField(
             decoration: InputDecoration(
               labelText: 'Available Presets',
@@ -181,8 +182,8 @@ class _CustomEQState extends State<CustomEQ> {
             ),
             value: _selectedValue,
             onChanged: widget.enabled
-                ? (String value) {
-                    Equalizer.setPreset(value);
+                ? (String? value) {
+                    Equalizer.setPreset(value!);
                     setState(() {
                       _selectedValue = value;
                     });
@@ -196,7 +197,7 @@ class _CustomEQState extends State<CustomEQ> {
             }).toList(),
           );
         } else if (snapshot.hasError)
-          return Text(snapshot.error);
+          return Text(snapshot.error.toString());
         else
           return CircularProgressIndicator();
       },
