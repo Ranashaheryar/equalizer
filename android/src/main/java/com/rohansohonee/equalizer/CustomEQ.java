@@ -1,6 +1,8 @@
 package com.rohansohonee.equalizer;
 
 import android.media.audiofx.Equalizer;
+import android.media.MediaPlayer;
+
 
 import java.util.ArrayList;
 
@@ -8,7 +10,8 @@ public class CustomEQ {
 	private static Equalizer equalizer;
 
 	public static void init(int sessionId) {
-		equalizer = new Equalizer(0, sessionId);
+		equalizer = new Equalizer(0,  new MediaPlayer().getAudioSessionId());
+		// equalizer = new Equalizer(0, sessionId);
 	}
 
 	public static void enable(boolean enable) {
