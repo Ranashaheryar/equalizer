@@ -91,4 +91,9 @@ class Equalizer {
   static Future<void> setPreset(String presetName) async {
     await _channel.invokeMethod('setPreset', presetName);
   }
+
+
+  static Future<void> boostLoudness(int boost) async {
+    await _channel.invokeMethod('boostLoudness', boost);
+  }
 }

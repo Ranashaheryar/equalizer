@@ -30,53 +30,55 @@ public class EqualizerPlugin implements FlutterPlugin, MethodCallHandler, Activi
 		methodChannel.setMethodCallHandler(this);
 	}
 
-
 	@Override
 	public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 		switch (call.method) {
-		case "open":
-			int sessionId = (int)call.argument("audioSessionId");
-			int content_type = (int)call.argument("contentType");
-			displayDeviceEqualizer(sessionId, content_type, result);
-			break;
-		case "setAudioSessionId":
-			setAudioSessionId((int)call.arguments);
-			break;
-		case "removeAudioSessionId":
-			removeAudioSessionId((int)call.arguments);
-			break;
-		case "init":
-			CustomEQ.init((int)call.arguments);
-			break;
-		case "enable":
-			CustomEQ.enable((boolean)call.arguments);
-			break;
-		case "release":
-			CustomEQ.release();
-			break;
-		case "getBandLevelRange":
-			result.success(CustomEQ.getBandLevelRange());
-			break;
-		case "getCenterBandFreqs":
-			result.success(CustomEQ.getCenterBandFreqs());
-			break;
-		case "getPresetNames":
-			result.success(CustomEQ.getPresetNames());
-			break;
-		case "getBandLevel":
-			result.success(CustomEQ.getBandLevel((int)call.arguments));
-			break;
-		case "setBandLevel":
-			int bandId = (int)call.argument("bandId");
-			int level = (int)call.argument("level");
-			CustomEQ.setBandLevel(bandId, level);
-			break;
-		case "setPreset":
-			CustomEQ.setPreset((String)call.arguments);
-			break;
-		default:
-			result.notImplemented();
-			break;
+			case "open":
+				int sessionId = (int) call.argument("audioSessionId");
+				int content_type = (int) call.argument("contentType");
+				displayDeviceEqualizer(sessionId, content_type, result);
+				break;
+			case "setAudioSessionId":
+				setAudioSessionId((int) call.arguments);
+				break;
+			case "removeAudioSessionId":
+				removeAudioSessionId((int) call.arguments);
+				break;
+			case "init":
+				CustomEQ.init((int) call.arguments);
+				break;
+			case "enable":
+				CustomEQ.enable((boolean) call.arguments);
+				break;
+			case "release":
+				CustomEQ.release();
+				break;
+			case "getBandLevelRange":
+				result.success(CustomEQ.getBandLevelRange());
+				break;
+			case "getCenterBandFreqs":
+				result.success(CustomEQ.getCenterBandFreqs());
+				break;
+			case "getPresetNames":
+				result.success(CustomEQ.getPresetNames());
+				break;
+			case "getBandLevel":
+				result.success(CustomEQ.getBandLevel((int) call.arguments));
+				break;
+			case "setBandLevel":
+				int bandId = (int) call.argument("bandId");
+				int level = (int) call.argument("level");
+				CustomEQ.setBandLevel(bandId, level);
+				break;
+			case "setPreset":
+				CustomEQ.setPreset((String) call.arguments);
+				break;
+				case "boostLoudness":
+				CustomEQ.boostLoudness((int) call.arguments);
+				break;
+			default:
+				result.notImplemented();
+				break;
 		}
 	}
 
@@ -90,11 +92,9 @@ public class EqualizerPlugin implements FlutterPlugin, MethodCallHandler, Activi
 		} else {
 			result.error("EQ",
 					"No equalizer found!",
-					"This device may lack equalizer functionality."
-			);
+					"This device may lack equalizer functionality.");
 		}
 	}
-
 
 	void setAudioSessionId(int sessionId) {
 		Intent i = new Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
@@ -110,14 +110,12 @@ public class EqualizerPlugin implements FlutterPlugin, MethodCallHandler, Activi
 		applicationContext.sendBroadcast(i);
 	}
 
-
 	@Override
 	public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
 		applicationContext = null;
 		methodChannel.setMethodCallHandler(null);
 		methodChannel = null;
 	}
-
 
 	@Override
 	public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {

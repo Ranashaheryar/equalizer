@@ -10,11 +10,13 @@ class EqualizerView extends StatefulWidget {
 
 class _EqualizerViewState extends State<EqualizerView> {
   bool? enableCustomEQ = false;
+  int boost=0;
 
   @override
   void initState() {
     super.initState();
     Equalizer.init(0);
+    Equalizer.boostLoudness(200);
   }
 
   @override
@@ -43,7 +45,12 @@ class _EqualizerViewState extends State<EqualizerView> {
                     textColor: Colors.white,
                     onPressed: () async {
                       try {
-                        await Equalizer.open(0);
+                        // await Equalizer.open(0);
+                        boost=boost+10;
+
+
+    Equalizer.boostLoudness(boost);
+
                       } on PlatformException catch (e) {
                         final snackBar = SnackBar(
                           behavior: SnackBarBehavior.floating,
